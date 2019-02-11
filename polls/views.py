@@ -27,13 +27,13 @@ def order(request):
 
 def orders(request):
   
-   form=ordenPizza(request.POST or None)
+   form=ordenPizza(request.user,request.POST or None)
    if request.method == 'POST':
-       form=ordenPizza(request.POST)
+       form=ordenPizza(request.user,request.POST)
        if form.is_valid():
           form.save()
           return HttpResponse('Gracias por su orden')  
        else:
-          form=ordenPizza()   
+          form=ordenPizza(request.user)   
       
    return render(request,'polls/compra.html',{'form':form})

@@ -9,17 +9,18 @@ class addClienteForm(forms.ModelForm):
 
 class ordenPizza(forms.ModelForm):
 
-  fecha=forms.DateField(widget=forms.TextInput(attrs=
-                                {
-                                    'class':'datepicker'
-                                })) 
-  client = [(c.id, c.nombre) for c in cliente.objects.all()]
-  pizza_choices = [(p.id, p.size) for p in pizza.objects.all()]
-  ingrediente_choices = [(i.id, i.nombre) for i in ingrediente.objects.all()]
-  fk_cliente=forms.ChoiceField(required=True, label='Cliente', choices=client)
-  fk_pizza = forms.ChoiceField(required=True, label='Pizza', choices=pizza_choices)
-  fk_ingrediente = forms.ChoiceField(required=True, label='Ingredientes',widget=forms.Select,choices=ingrediente_choices)
+  def __init__(self, user, *args, **kwargs):
+        super(ordenPizza, self).__init__(*args, **kwargs)
+        self.fields['fk_cliente'] = forms.ChoiceField(label='Cliente',
+            choices=[(o.id, o.nombre) for o in cliente.objects.order_by('nombre','apellido')])
+        self.fields['fk_ingrediente'] = forms.ChoiceField(label='Ingrediente',
+            choices=[(o.id, o.nombre )for o in ingrediente.objects.order_by('nombre')])
+        self.fields['fk_pizza'] = forms.ChoiceField(label='Pizza',
+            choices=[(o.id, o.size) for o in pizza.objects.order_by('size')])
+       
+       
 
+  
   class Meta:
      model=orden
      fields=['fecha','cantidad','total','fk_cliente','fk_ingrediente','fk_pizza']
